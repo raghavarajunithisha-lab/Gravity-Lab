@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gravity Lab · Cursor experiment</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <!-- Header and experiment title -->
+      <header>
+        <a class="brand" href="./"
+          ><span class="logo">↘</span> GRAVITY LAB
+          <span class="tag">INTERACTIVE EXPERIMENT / 001</span></a
+        ><span class="online"><i></i> Physics in your browser</span>
+      </header>
+      <section class="intro">
+        <p class="eyebrow">A LITTLE POINTER. A DIFFERENT WORLD.</p>
+        <h1>Give your cursor<br /><em>some gravity.</em></h1>
+        <p>
+          Same cursor. Nine worlds. Feel how a planet changes the effort<br
+            class="desktop"
+          />
+          it takes to keep a little mass in the air.
+        </p>
+      </section>
+      <!-- Left: simulation. Right: controls and live measurements. -->
+      <div class="workspace">
+        <section class="experiment" aria-label="Cursor simulation">
+          <div class="arena-top">
+            <span
+              ><i class="dot"></i> <b id="world-label">EARTH</b>
+              <span class="muted">/ GRAVITY FIELD</span></span
+            ><span id="status" role="status">Ready to drop</span>
+          </div>
+          <div
+            id="arena"
+            tabindex="0"
+            role="application"
+            aria-label="Gravity playground. Move your mouse to push the cursor, or use arrow keys. Space pauses; R resets."
+          >
+            <div class="field-label">↓ UNIFORM GRAVITY</div>
+            <div class="planet-art" aria-hidden="true"></div>
+            <div class="orbit" aria-hidden="true"></div>
+            <div class="ruler" aria-hidden="true">
+              0 m<br />1 m<br />2 m<br />3 m
+            </div>
+            <!-- Force arrows are positioned by app.js; the decorative planet is CSS. -->
+            <svg id="vectors" aria-hidden="true">
+              <defs>
+                <marker
+                  id="arrow"
+                  markerWidth="7"
+                  markerHeight="7"
+                  refX="5"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L6,3 L0,6" fill="context-stroke" />
+                </marker>
+              </defs>
+              <line
+                id="gravity-vector"
+                stroke="#ffb383"
+                marker-end="url(#arrow)"
+              />
+              <line
+                id="input-vector"
+                stroke="#a8edbe"
+                marker-end="url(#arrow)"
+              />
+            </svg>
+            <div id="cursor" aria-hidden="true">
+              <svg viewBox="0 0 30 36">
+                <path d="M4 2 L25 21 L15 22 L11 32 Z" />
+              </svg>
+            </div>
+            <div id="hint">
+              Move your mouse upward to lift<br /><small
+                >Stop moving and gravity takes over.</small
+              >
+            </div>
+            <div class="floor">
+              <span>VIRTUAL SURFACE</span><span>100 px = 1 m</span>
+            </div>
+          </div>
+          <div class="arena-bottom">
+            <button id="pause">Pause</button
+            ><button id="reset">↺ Reset drop</button
+            ><span
+              ><span class="key">↑ ↓ ← →</span> also work · Space to pause</span
+            >
+          </div>
+        </section>
+        <!-- Planet buttons are created from the data in physics.js. -->
+        <aside>
+          <div class="panel">
+            <div class="section-heading">
+              <span>01 / CHOOSE YOUR WORLD</span><span>↗</span>
+            </div>
+            <div id="planets" class="planets"></div>
+            <div class="world-info">
+              <span>Surface acceleration</span
+              ><strong><span id="g">9.8</span> <small>m/s²</small></strong>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="section-heading">
+              <label for="mass">02 / CURSOR MASS</label
+              ><output id="mass-label" for="mass">50 g</output>
+            </div>
+            <input
+              type="range"
+              id="mass"
+              min="10"
+              max="250"
+              step="5"
+              value="50"
+            />
+            <div class="range-labels">
+              <span>10 g · light</span><span>250 g · heavy</span>
+            </div>
+            <p class="note">
+              More mass needs more lift. Free fall stays the same.
+            </p>
+            <label class="bounce-label" for="bounce"
+              >Surface bounce <output id="bounce-label">55%</output></label
+            ><input type="range" id="bounce" min="0" max="90" value="55" />
+          </div>
+          <div class="panel feedback">
+            <div class="section-heading">03 / LIVE FORCE FEEDBACK</div>
+            <div class="reading">
+              <span>Weight <small>m × g ↓</small></span
+              ><strong id="weight">0.490 N</strong>
+            </div>
+            <div class="reading">
+              <span>Your lift <small>↑</small></span
+              ><strong id="lift">0.000 N</strong>
+            </div>
+            <div class="meter"><div id="lift-meter"></div></div>
+            <div class="reading minor">
+              <span>Net vertical force <small>↓ positive</small></span
+              ><strong id="net">0.490 N</strong>
+            </div>
+            <div class="reading minor">
+              <span>Vertical velocity <small>↓ positive</small></span
+              ><strong id="velocity">0.00 m/s</strong>
+            </div>
+            <div class="reading minor">
+              <span>Surface support</span><strong id="support">0.000 N</strong>
+            </div>
+            <p id="effort">Move upward to overcome the weight.</p>
+          </div>
+        </aside>
+      </div>
+      <!-- Visible explanation of the model and its limits -->
+      <section class="footnotes">
+        <div>
+          <span class="eyebrow">THE PHYSICS</span>
+          <h2>Weight changes. Mass doesn't.</h2>
+          <p>
+            Weight = mass × gravity. Acceleration = net force ÷ mass. Switch
+            worlds mid-flight to see the difference. Green arrows show your
+            applied force; peach arrows show gravity.
+          </p>
+        </div>
+        <div>
+          <span class="eyebrow">THE FINE PRINT</span>
+          <h2>A simulation, not physical resistance.</h2>
+          <p>
+            This custom cursor lives only in the playground; it cannot move your
+            Windows pointer or resist your hand. Mouse speed maps to an
+            artificial force capped at 2 N. No air drag or orbital physics; a
+            flat surface, floor friction and adjustable bounce are modeled.
+            Giant planets use a reference gravity with a fictional solid floor.
+          </p>
+          <a
+            href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
+            target="_blank"
+            rel="noreferrer"
+            >Gravity values: NASA planetary fact sheet ↗</a
+          >
+        </div>
+      </section>
+      <footer>
+        GRAVITY LAB <span>Built for curiosity. Grounded in physics.</span>
+      </footer>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
